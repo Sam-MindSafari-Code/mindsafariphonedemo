@@ -2,109 +2,83 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Demo App (390px)</title>
+<meta
+  name="viewport"
+  content="width=390, initial-scale=1, maximum-scale=1, user-scalable=no"
+/>
+<title>MindSafari Demo (390×844 Fixed)</title>
 <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@500;700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --canvas-width: 390px;
-    --bg:#81D4F6;
-    --btn:#1E88E5;
+    --canvas-w: 380px;
+    --canvas-h: 844px;
+    --bg: #81D4F6;
+    --btn: #1E88E5;
     --btn-hover:#1565C0;
-    --text:#ffffff;
+    --white: #fff;
     --text-dark:#0b2b3a;
-    --radius: 9999px;
-    --pad: 20px;
+    --radius-pill: 9999px;
+    --shadow-btn: 0 10px 18px rgba(30,136,229,0.35);
   }
 
+  /* White gutters outside the fixed canvas */
   html, body {
     margin: 0;
-    background: #FFFFFF; /* side gutters on larger phones */
+    background: #fff;
     font-family: "Dosis", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: #fff;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  /* Center the fixed 390×844 phone canvas */
   .phone-wrap {
     width: 100%;
-    min-height: 100svh;
+    min-height: 100dvh;
     display: grid;
     place-items: center;
   }
+
   .phone {
-    width: var(--canvas-width);
-    min-height: 100svh;
+    width: var(--canvas-w);
+    height: var(--canvas-h);
     background: var(--bg);
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* hide anything beyond the canvas */
   }
 
+  /* Each screen fills the canvas exactly; backgrounds do not drift */
   .screen {
     position: absolute;
     inset: 0;
     background: var(--bg) no-repeat center;
-    background-size: contain;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--pad);
-    transition: opacity 180ms ease;
+    background-size: 100% 100%;
     opacity: 0;
     pointer-events: none;
+    transition: opacity 150ms ease;
   }
   .screen.active { opacity: 1; pointer-events: auto; }
 
-  .panel {
-    width: calc(var(--canvas-width) - 2*var(--pad));
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
-    display: grid;
-    gap: 16px;
-    justify-items: center;
-  }
-  .page-title {
-    margin-top: 25vh;
-  color: #fff;
-  font-size: 40px;       /* adjust to match your vibe */
-  font-weight: 800;
-  text-align: center;
-  margin-bottom: 20px;   /* space below the text */
-  text-shadow: 0 2px 6px rgba(0,0,0,0.25); /* optional for contrast */
-}
-
-  .page-title2 {
-
-  color: #fff;
-  font-size: 40px;       /* adjust to match your vibe */
-  font-weight: 800;
-  text-align: center;
-  margin-bottom: 20px;   /* space below the text */
-  text-shadow: 0 2px 6px rgba(0,0,0,0.25); /* optional for contrast */
-}
-
-
+  /* Buttons (pill, bold, shadow) */
   .btn {
     appearance: none;
     border: 0;
     background: var(--btn);
-    color: #fff;
+    color: var(--white);
     padding: 14px 26px;
     font-size: 20px;
     font-weight: 800;
     letter-spacing: 0.3px;
-    border-radius: var(--radius);
-    box-shadow: 0 10px 18px rgba(30,136,229,0.35);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-btn);
     cursor: pointer;
     transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
   }
   .btn:hover { background: var(--btn-hover); }
   .btn:active { transform: translateY(1px); box-shadow: 0 6px 14px rgba(21,101,192,0.35); }
 
-
-  #screen-7 .bubble {
-  margin-top: 50vh;  /* pushes the bubble + tail lower */
-}
-
+  /* Inputs */
   .input {
-    width: 100%;
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
+    width: 350px; max-width: 350px;
     padding: 14px 16px;
     font-size: 18px;
     border-radius: 16px;
@@ -118,81 +92,70 @@
     box-shadow: 0 0 0 3px rgba(30,136,229,0.18);
   }
 
-  /* Screen 3 layout (kept like before) */
-  .greeting {
-    font-weight: 900;
-    font-size: 32px;
-    text-align: center;
-    color: var(--text);
-    margin-top: 35vh; /* pushed down */
-  }
-  .bottom-btn { margin-top: auto; margin-bottom: 32vh; }
-  .bottom-btn .btn { padding-left: 30px; padding-right: 30px; }
-
-  /* Chat bubble (pages 5 & 7) */
+  /* Chat bubble (light) */
   .bubble {
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
+    width: 330px; max-width: 330px;
     background: rgba(255,255,255,0.9);
     color: var(--text-dark);
     padding: 14px 16px;
     border-radius: 16px;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.25;
+    font-size: 18px; font-weight: 700; line-height: 1.25;
     box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-    margin-top: 50vh; /* similar top spacing style */
+    text-align: left;
+    position: absolute; left: 50%; transform: translateX(-50%);
   }
-  .bubble.white-text {
-    background: rgba(0,0,0,0.25);
-    color: #fff;
-  }
-
-  #screen-2 .panel {
-  margin-top: 40vh;  /* pushes the whole block lower */
-}
-
-  #screen-1 .panel {
-  margin-top: 15vh;  /* pushes the whole block lower */
-}
-
-.greeting { margin-top: 45vh; }
-
   .bubble-tail {
     width: 0; height: 0;
     border-left: 12px solid transparent;
     border-right: 12px solid transparent;
     border-top: 12px solid rgba(255,255,255,0.9);
-    margin-top: 6px;
+    position: absolute; left: 50%; transform: translateX(-50%);
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
   }
-  .bubble.white-text + .bubble-tail {
-    border-top-color: rgba(0,0,0,0.25);
+
+  /* ========== PAGE-SPECIFIC ABSOLUTE POSITIONS (px) ========== */
+
+  /* Page 1 (Phone1.svg) */
+  #screen-1 .title1 {
+    position: absolute; left: 50%; top: 350px; transform: translateX(-50%);
+    width: 330px; text-align: center; color: #fff; font-weight: 800; font-size: 32px; text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  #screen-1 #startBtn {
+    position: absolute; left: 50%; top: 450px; transform: translateX(-50%);
   }
 
-  #screen-9 .final-title {
-  margin-top: 25vh;  /* adjust to taste */
-}
-
-
-  .bubble-btn { margin-top: auto; margin-bottom: 32vh; }
-
-  /* Mood slider (page 4) */
-  .mood-wrap {
-    width: calc(var(--canvas-width) - 2*var(--pad));
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
-    display: grid;
-    grid-template-rows: auto 1fr auto auto;
-    row-gap: 14px;
-    align-items: center;
-    justify-items: center;
-    margin-top: 30vh;
-    color: #ffffff;
-    text-align: center;
+  /* Page 2 (Phone2.svg) */
+  #screen-2 .title2 {
+    position: absolute; left: 50%; top: 380px; transform: translateX(-50%);
+    width: 330px; text-align: center; color: #fff; font-weight: 900; font-size: 32px; text-shadow: 0 2px 6px rgba(0,0,0,0.25);
   }
-  .mood-title { font-size: 32px; font-weight: 900; line-height: 1.15; text-shadow: 0 2px 6px rgba(0,0,0,0.8); }
-  .mood-slider {
-    display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; column-gap: 10px; width: 100%;
+  #screen-2 #nameInput {
+    position: absolute; left: 50%; top: 470px; transform: translateX(-50%);
   }
+  #screen-2 #submitName {
+    position: absolute; left: 50%; top: 550px; transform: translateX(-50%);
+  }
+
+  /* Page 3 (Phone3.svg) */
+  #screen-3 #greeting {
+    position: absolute; left: 50%; top: 350px; transform: translateX(-50%);
+    width: 360px; text-align: center; color: #fff; font-weight: 900; font-size: 32px; text-shadow: 0 2px 8px rgba(0,0,0,0.28);
+  }
+  #screen-3 #nextBtn {
+    position: absolute; left: 50%; top: 450px; transform: translateX(-50%);
+  }
+
+  /* Page 4 (Phone4.svg) */
+  #screen-4 #moodTitle {
+    position: absolute; left: 50%; top: 280px; transform: translateX(-50%);
+    width: 360px; text-align: center; color: #fff; font-weight: 800; font-size: 28px; text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+  }
+  #screen-4 #arrowLeft  { position: absolute; left: 35px; top: 400px; }
+  #screen-4 #arrowRight { position: absolute; right: 35px; top: 400px; }
+  #screen-4 #emojiImg   { position: absolute; left: 50%; top: 350px; transform: translateX(-50%); width: 160px; height: auto; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25)); }
+  #screen-4 #moodCaption{ position: absolute; left: 50%; top: 500px; transform: translateX(-50%); font-weight: 800; font-size: 20px; text-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+  #screen-4 #moodSubmit { position: absolute; left: 50%; top: 600px; transform: translateX(-50%); }
+
   .arrow {
     width: 56px; height: 56px; display: grid; place-items: center;
     border-radius: 50%;
@@ -204,65 +167,67 @@
     transition: transform 100ms ease, background 120ms ease;
   }
   .arrow:active { transform: translateY(1px) scale(0.98); }
-  .emoji-slot { display: grid; place-items: center; min-height: 190px; }
-  .emoji-slot img { width: 220px; max-width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25)); }
-  .mood-caption { font-size: 20px; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.25); min-height: 28px; display: grid; place-items: center; }
-  .mood-submit { margin-top: 8px; }
-  .mood-submit .btn { padding-left: 38px; padding-right: 38px; }
 
-  /* Page 6 journal input */
-  .journal-wrap {
-    width: calc(var(--canvas-width) - 2*var(--pad));
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
-    display: grid; row-gap: 14px; justify-items: center;
-    margin-top: 40vh;
+  /* Page 5 (Phone5.svg) */
+  #screen-5 .bubble { top: 260px; }
+  #screen-5 .bubble-tail { top: 320px; }
+  #screen-5 #sureBtn { position: absolute; left: 50%; top: 640px; transform: translateX(-50%); }
+
+  /* Page 6 (Phone6.svg) */
+  #screen-6 .journal-wrap {
+    position: absolute; left: 50%; top: 350px; transform: translateX(-50%);
+    width: 300px;
   }
   .journal-input {
-    width: 80%;
-    min-height: 370px;
-    padding: 4px;
-    font-size: 20px; line-height: 2.27;
-    border: none;
-    border-radius: 10px;
-    outline: none;
-    background: transparent;        /* transparent per request */
-    color: #0b2b3a;                 /* adjust if you prefer white */
-    resize: vertical;
-  }
-  .journal-input::placeholder { color: rgba(11,43,58,0.6); }
-  .journal-btn { margin-top: auto; margin-bottom: 16vh; }
-
-  /* Page 8 drawing */
-  .draw-wrap {
-    width: calc(var(--canvas-width) - 2*var(--pad));
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
-    display: grid; row-gap: 12px; justify-items: center;
-    margin-top: 23vh;
-    color: transparent;
-  }
-  .canvas-frame {
-    width: 90%; height: 400px; /* adjustable later */
-    background: transparent;
+    width: 300px;
+    min-height: 220px;
+    padding: 12px;
+    font-size: 20px; line-height: 2.3;
+    border: none;             /* no dotted lines */
     border-radius: 12px;
-    box-shadow: none;
-    position: relative;
-    overflow: hidden;
+    outline: none;
+    background: transparent;  /* transparent typing area */
+    color: var(--text-dark);  /* adjust if you prefer white */
+    resize: none;
   }
-  canvas#pad { display: block; width: 100%; height: 100%; touch-action: none; }
-  .draw-btn { margin-top: auto; margin-bottom: 8vh; }
+  #screen-6 #journalSubmit { position: absolute; left: 50%; top: 640px; transform: translateX(-50%); }
 
-  /* Page 9 socials */
-  .final-wrap {
-    width: calc(var(--canvas-width) - 2*var(--pad));
-    max-width: calc(var(--canvas-width) - 2*var(--pad));
-    display: grid; row-gap: 16px; justify-items: center;
-    margin-top: 12vh; text-align: center; color: #fff;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  /* Page 7 (Phone7.svg) */
+  #screen-7 .bubble { top: 460px; }
+  #screen-7 .bubble-tail { top: 220px; }
+  #screen-7 #okDrawBtn { position: absolute; left: 50%; top: 550px; transform: translateX(-50%); }
+
+  /* Page 8 (Phone8.svg) */
+  #screen-8 .draw-wrap { position: absolute; left: 50%; top: 240px; transform: translateX(-50%); width: 330px; color: #f73030; text-align: center; }
+  #screen-8 .draw-label { font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.25); margin-bottom: 10px; }
+  #screen-8 .canvas-frame { width: 330px; height: 600px; background: transparent; border-radius: 12px; box-shadow: none; position: relative; overflow: hidden; }
+  canvas#pad { display: block; width: 350px; height: 400px; touch-action: none; }
+  #screen-8 #doneBtn { position: absolute; left: 50%; top: 680px; transform: translateX(-50%); }
+
+  /* Page 9 (Phone9.svg) */
+  #screen-9 #finalTitle {
+    position: absolute; left: 50%; top: 240px; transform: translateX(-50%);
+    width: 330px; text-align: center; color: #fff; font-weight: 800; font-size: 22px; text-shadow: 0 2px 6px rgba(0,0,0,0.25);
   }
-  .final-title { font-size: 22px; font-weight: 800; }
-  .socials { display: grid; grid-auto-flow: column; gap: 16px; }
-  .socials a { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 16px; background: rgba(255,255,255,0.92); box-shadow: 0 6px 14px rgba(0,0,0,0.82); }
-  .socials svg { width: 34px; height: 34px; }
+  #screen-9 .socials {
+    position: absolute; left: 50%; top: 380px; transform: translateX(-50%);
+    display: grid; grid-auto-flow: column; gap: 16px;
+  }
+  .socials a {
+    display: inline-grid; place-items: center;
+    width: 64px; height: 64px; border-radius: 16px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+  .socials svg { width: 34px; height: 34px; fill: #111; }
+
+  /* Utility */
+  .sr-only {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden; clip: rect(1px,1px,1px,1px);
+    white-space: nowrap; border: 0; padding: 0; margin: -1px;
+  }
 </style>
 </head>
 <body>
@@ -270,88 +235,76 @@
     <main class="phone" id="phone">
       <!-- Screen 1 -->
       <section class="screen active" id="screen-1" style="background-image:url('Phone1.svg');">
-        <div class="panel">
-          <div class="page-title">Welcome to MindSafari – Demo</div>
-          <button class="btn" id="startBtn">Start Demo</button>
-        </div>
+        <div class="title1">Welcome to MindSafari Demo Version</div>
+        <button class="btn" id="startBtn">Start Demo</button>
       </section>
 
       <!-- Screen 2 -->
       <section class="screen" id="screen-2" style="background-image:url('Phone2.svg');">
-        <div class="panel">
-          <div class="page-title2">What's your name?</div>
-          <input class="input" id="nameInput" type="text" placeholder="Enter your name" autocomplete="name" />
-          <button class="btn" id="submitName">Continue</button>
-        </div>
+        <div class="title2">What's your name?</div>
+        <input class="input" id="nameInput" type="text" placeholder="Enter your name" autocomplete="name" />
+        <button class="btn" id="submitName">Continue</button>
       </section>
 
       <!-- Screen 3 -->
       <section class="screen" id="screen-3" style="background-image:url('Phone3.svg');">
-        <div class="greeting" id="greeting">Welcome to the Demo!</div>
-        <div class="bottom-btn">
-          <button class="btn" id="nextBtn">Let's Go!</button>
-        </div>
+        <div id="greeting">Welcome to the Demo!</div>
+        <button class="btn" id="nextBtn">Let's Go!</button>
       </section>
 
       <!-- Screen 4: Mood Slider -->
       <section class="screen" id="screen-4" style="background-image:url('Phone4.svg');" aria-live="polite">
-        <div class="mood-wrap">
-          <div class="mood-title" id="moodTitle">How are you feeling today?</div>
-          <div class="mood-slider">
-            <button class="arrow" id="arrowLeft" aria-label="Previous mood">◀</button>
-            <div class="emoji-slot"><img id="emojiImg" src="neutral.svg" alt="Neutral emoji" /></div>
-            <button class="arrow" id="arrowRight" aria-label="Next mood">▶</button>
-          </div>
-          <div class="mood-caption" id="moodCaption">I'm ok.</div>
-          <div class="mood-submit"><button class="btn" id="moodSubmit">Submit</button></div>
-        </div>
+        <div id="moodTitle">How are you feeling today?</div>
+        <button class="arrow" id="arrowLeft" aria-label="Previous mood">◀</button>
+        <img id="emojiImg" src="neutral.svg" alt="Neutral emoji" />
+        <button class="arrow" id="arrowRight" aria-label="Next mood">▶</button>
+        <div id="moodCaption">I'm ok.</div>
+        <button class="btn" id="moodSubmit">Submit</button>
       </section>
 
-      <!-- Screen 5: Chat bubble + Sure! -->
+      <!-- Screen 5 -->
       <section class="screen" id="screen-5" style="background-image:url('Phone5.svg');">
         <div class="bubble">Can you tell me what made you feel that way?</div>
-        <div class="bubble-tail" aria-hidden="true"></div>
-        <div class="bubble-btn"><button class="btn" id="sureBtn">Sure!</button></div>
+        <div class="bubble-tail"></div>
+        <button class="btn" id="sureBtn">Sure!</button>
       </section>
 
-      <!-- Screen 6: Journal (transparent input) -->
+      <!-- Screen 6 -->
       <section class="screen" id="screen-6" style="background-image:url('Phone6.svg');">
         <div class="journal-wrap">
-          <textarea id="journalInput" class="journal-input" placeholder="Type here..."></textarea>
+          <textarea id="journalInput" class="journal-input" placeholder="Type your thoughts here..."></textarea>
         </div>
-        <div class="journal-btn"><button class="btn" id="journalSubmit">Submit</button></div>
+        <button class="btn" id="journalSubmit">Submit</button>
       </section>
 
-      <!-- Screen 7: Chat bubble + Ok! -->
+      <!-- Screen 7 -->
       <section class="screen" id="screen-7" style="background-image:url('Phone7.svg');">
         <div class="bubble">Can you draw me an object that makes you happy?</div>
-        <div class="bubble-tail" aria-hidden="true"></div>
-        <div class="bubble-btn"><button class="btn" id="okDrawBtn">Ok!</button></div>
+        <div class="bubble-tail"></div>
+        <button class="btn" id="okDrawBtn">Ok!</button>
       </section>
 
-      <!-- Screen 8: Drawing Canvas + I'm done -->
+      <!-- Screen 8 -->
       <section class="screen" id="screen-8" style="background-image:url('Phone8.svg');">
         <div class="draw-wrap">
-          <div style="font-weight:800;text-shadow:0 2px 6px rgba(0,0,0,0.25);">Draw here</div>
+          <div class="draw-label">Draw here</div>
           <div class="canvas-frame"><canvas id="pad"></canvas></div>
         </div>
-        <div class="draw-btn"><button class="btn" id="doneBtn">I'm done</button></div>
+        <button class="btn" id="doneBtn">I'm done</button>
       </section>
 
-      <!-- Screen 9: Thank you + Socials -->
+      <!-- Screen 9 -->
       <section class="screen" id="screen-9" style="background-image:url('Phone9.svg');">
-        <div class="final-wrap">
-          <div class="final-title" id="finalTitle">Thank you for joining us, Name! Here are our Socials if you want to know more!</div>
-          <div class="socials">
-            <a id="instaLink" href="https://www.instagram.com/mindsafari_official?igsh=dDgwYnpkb255NWNx" target="_blank" rel="noopener">
-              <!-- Instagram glyph -->
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9a3 3 0 110 6 3 3 0 010-6z"/></svg>
-            </a>
-            <a id="liLink" href="https://www.linkedin.com/company/mindsafari/" target="_blank" rel="noopener">
-              <!-- LinkedIn glyph -->
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v15H0zM8 8h4.8v2.05h.07c.67-1.2 2.32-2.46 4.78-2.46 5.1 0 6.05 3.36 6.05 7.73V23H19V16c0-1.67-.03-3.82-2.33-3.82-2.33 0-2.69 1.82-2.69 3.7V23H8z"/></svg>
-            </a>
-          </div>
+        <div id="finalTitle">Thank you for joining us, Name! Here are our Socials if you want to know more!</div>
+        <div class="socials">
+          <a id="instaLink" href="https://www.instagram.com/mindsafari_official?igsh=dDgwYnpkb255NWNx" target="_blank" rel="noopener" aria-label="Instagram">
+            <!-- Instagram glyph -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.75a1.25 1.25 0 11-2.5 0 1.25 1.25 0 012.5 0zM12 9a3 3 0 110 6 3 3 0 010-6z"/></svg>
+          </a>
+          <a id="liLink" href="https://www.linkedin.com/company/mindsafari/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <!-- LinkedIn glyph -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v15H0zM8 8h4.8v2.05h.07c.67-1.2 2.32-2.46 4.78-2.46 5.1 0 6.05 3.36 6.05 7.73V23H19V16c0-1.67-.03-3.82-2.33-3.82-2.33 0-2.69 1.82-2.69 3.7V23H8z"/></svg>
+          </a>
         </div>
       </section>
     </main>
@@ -365,39 +318,46 @@
   const MOOD_KEY = 'demo:mood';
   const JOURNAL_KEY = 'demo:journal';
 
-  /* Navigation helper */
   function show(i){
     screens.forEach((el,idx)=>el.classList.toggle('active', idx===i));
   }
 
-  /* Screen 1 */
+  /* Page 1 */
   qs('#startBtn').addEventListener('click', ()=> show(1));
 
-  /* Screen 2 */
+  /* Page 2 */
   const nameInput  = qs('#nameInput');
   const submitBtn  = qs('#submitName');
+  function personalizeName(){
+    const n = localStorage.getItem(NAME_KEY);
+    if (n) {
+      const greetingEl = qs('#greeting');
+      const title4 = qs('#moodTitle');
+      const finalTitle = qs('#finalTitle');
+      if (greetingEl) greetingEl.textContent = `Welcome to the Demo, ${n}!`;
+      if (title4) title4.textContent = `How are you feeling today, ${n}?`;
+      if (finalTitle) finalTitle.textContent = `Thank you for joining us, ${n}! Here are our Socials if you want to know more!`;
+    }
+  }
   function submitName(){
     const name = (nameInput.value || '').trim();
     if(!name) { nameInput.focus(); return; }
     localStorage.setItem(NAME_KEY, name);
     personalizeName();
-    show(2);
+    show(2); // -> Screen 3
   }
   submitBtn.addEventListener('click', submitName);
   nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitName(); });
 
-  /* Screen 3 */
-  const greetingEl = qs('#greeting');
-  qs('#nextBtn').addEventListener('click', ()=> show(3));
+  /* Page 3 */
+  qs('#nextBtn').addEventListener('click', ()=> show(3)); // -> Screen 4
 
-  /* Screen 4 (mood slider) */
-  const moodTitle   = qs('#moodTitle');
+  /* Page 4 (mood slider) */
   const emojiImg    = qs('#emojiImg');
   const moodCaption = qs('#moodCaption');
   const arrowLeft   = qs('#arrowLeft');
   const arrowRight  = qs('#arrowRight');
   const moodSubmit  = qs('#moodSubmit');
-
   const moods = [
     { key:'neutral', img:'neutral.svg', alt:'Neutral emoji',  caption:"I'm ok." },
     { key:'happy',   img:'happy.svg',   alt:'Happy emoji',    caption:"I'm happy!" },
@@ -406,7 +366,7 @@
     { key:'angry',   img:'angry.svg',   alt:'Angry emoji',    caption:"I'm Angry!" },
     { key:'disgust', img:'disgust.svg', alt:'Disgust emoji',  caption:"I feel Sick." }
   ];
-  let idx = 0;  // start at neutral
+  let idx = 0;
   function renderMood(){
     const m = moods[idx];
     emojiImg.src = m.img;
@@ -423,33 +383,33 @@
     show(4); // -> Screen 5
   });
 
-  /* Screen 5 */
-  qs('#sureBtn').addEventListener('click', ()=> show(5));
+  /* Page 5 */
+  qs('#sureBtn').addEventListener('click', ()=> show(5)); // -> Screen 6
 
-  /* Screen 6 (journal) */
+  /* Page 6 (journal) */
   const journalInput = qs('#journalInput');
   const journalSubmit = qs('#journalSubmit');
-  // restore journal if any
   const savedJournal = localStorage.getItem(JOURNAL_KEY);
   if (savedJournal) journalInput.value = savedJournal;
-
   journalSubmit.addEventListener('click', ()=>{
     localStorage.setItem(JOURNAL_KEY, journalInput.value || '');
     show(6); // -> Screen 7
   });
 
-  /* Screen 7 */
-  qs('#okDrawBtn').addEventListener('click', ()=> show(7));
+  /* Page 7 */
+  qs('#okDrawBtn').addEventListener('click', ()=> show(7)); // -> Screen 8
 
-  /* Screen 8 (drawing) */
+  /* Page 8 (drawing) */
   const pad = qs('#pad');
   const ctx = pad.getContext('2d');
-  function sizeCanvas(){
-    // scale canvas to CSS size
-    const rect = pad.getBoundingClientRect();
-    pad.width = Math.floor(rect.width * devicePixelRatio);
-    pad.height = Math.floor(rect.height * devicePixelRatio);
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+  function sizeCanvasFixed(){
+    // Fixed CSS size: 350x360. Map it to device pixels for sharpness.
+    const cssW = 350, cssH = 360, dpr = Math.max(1, window.devicePixelRatio || 1);
+    pad.width = Math.floor(cssW * dpr);
+    pad.height = Math.floor(cssH * dpr);
+    // Reset transform then scale
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr, dpr);
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.lineWidth = 4;
@@ -457,9 +417,9 @@
   }
   let drawing = false, lastX = 0, lastY = 0;
   function pos(evt){
-    const r = pad.getBoundingClientRect();
-    const x = (evt.touches ? evt.touches[0].clientX : evt.clientX) - r.left;
-    const y = (evt.touches ? evt.touches[0].clientY : evt.clientY) - r.top;
+    const rect = pad.getBoundingClientRect();
+    const x = (evt.touches ? evt.touches[0].clientX : evt.clientX) - rect.left;
+    const y = (evt.touches ? evt.touches[0].clientY : evt.clientY) - rect.top;
     return {x, y};
   }
   function start(evt){ drawing = true; const p = pos(evt); lastX=p.x; lastY=p.y; }
@@ -470,10 +430,12 @@
     lastX = p.x; lastY = p.y;
   }
   function end(){ drawing = false; }
-  window.addEventListener('resize', sizeCanvas);
-  // init canvas after it's visible
-  const observer = new MutationObserver(()=>{ if (screens[7].classList.contains('active')) { sizeCanvas(); } });
-  observer.observe(qs('#phone'), { attributes:true, subtree:true, attributeFilter:['class'] });
+
+  // Init canvas when Screen 8 becomes active
+  const obs = new MutationObserver(()=> {
+    if (screens[7].classList.contains('active')) { sizeCanvasFixed(); }
+  });
+  obs.observe(qs('#phone'), { attributes:true, subtree:true, attributeFilter:['class'] });
 
   pad.addEventListener('mousedown', start);
   pad.addEventListener('mousemove', move);
@@ -485,22 +447,17 @@
 
   qs('#doneBtn').addEventListener('click', ()=> show(8)); // -> Screen 9
 
-  /* Personalization across pages */
-  function personalizeName(){
-    const n = localStorage.getItem(NAME_KEY);
-    if (n) {
-      greetingEl.textContent = `Welcome to the Demo, ${n}!`;
-      moodTitle.textContent = `How are you feeling today, ${n}?`;
-      qs('#finalTitle').textContent = `Thank you for joining us, ${n}! Here are our Socials if you want to know more!`;
-    }
-  }
-
-  /* Init */
+  /* Personalization + initial state */
   (function init(){
     const saved = localStorage.getItem(NAME_KEY);
     if (saved) nameInput.value = saved;
     personalizeName();
     renderMood();
+    // Position chat bubble tails relative to bubbles (they're centered already)
+    const s5b = document.querySelector('#screen-5 .bubble'), s5t = document.querySelector('#screen-5 .bubble-tail');
+    if (s5b && s5t) s5t.style.top = (260 + s5b.offsetHeight) + 'px';
+    const s7b = document.querySelector('#screen-7 .bubble'), s7t = document.querySelector('#screen-7 .bubble-tail');
+    if (s7b && s7t) s7t.style.top = (460 + s7b.offsetHeight) + 'px';
   })();
 </script>
 </body>
