@@ -31,18 +31,22 @@
   }
 
 .phone-wrap {
-  position: fixed;
+  position: fixed;     /* pinned to the viewport */
   inset: 0;
-  display: grid;
-  place-items: center;   /* centers the canvas */
-  background: #fff;
-  overflow: hidden;
+  display: flex;
+  align-items: center; /* vertical center */
+  justify-content: center; /* horizontal center */
+  background: #fff;    /* white gutters */
 }
 
+/* Your fixed canvas */
 .phone {
   width: 390px;
   height: 844px;
-  transform-origin: center center; /* for your scale-down */
+  background: #81D4F6;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center center;  /* important */
 }
   /* Each screen fills the canvas exactly; backgrounds do not drift */
   .screen {
@@ -460,27 +464,33 @@
 </script>
 
 <script>
-(function fitFixedCanvas() {
+(function centerAndScale() {
   const phone = document.querySelector('.phone');
-
-function applyScale() {
-  const phone = document.querySelector('.phone');
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
   const baseW = 390, baseH = 844;
 
-  // Only scale down; never scale up above 1
-  const scale = Math.min(1, vw / baseW, vh / baseH);
+  function applyScale() {
+    // Use VisualViewport when available (fixes iOS bottom-right issues)
+    const vw = window.visualViewport ? visualViewport.width  : window.innerWidth;
+    const vh = window.visualViewport ? visualViewport.height : window.innerHeight;
 
-  // No translate; the wrapper centers it
-  phone.style.transform = `scale(${scale})`;
-}
-window.addEventListener('resize', applyScale);
-window.addEventListener('orientationchange', applyScale);
-applyScale();
+    // Only scale down; never above 1
+    const scale = Math.min(1, vw / baseW, vh / baseH);
 
+    // No translate — wrapper centers it both axes
+    phone.style.transform = `scale(${scale})`;
+  }
+
+  // Reapply on resize, zoom UI changes, or viewport scroll adjustments
+  window.addEventListener('resize', applyScale);
+  window.addEventListener('orientationchange', applyScale);
+  if (window.visualViewport) {
+    visualViewport.addEventListener('resize', applyScale);
+    visualViewport.addEventListener('scroll', applyScale);
+  }
+  applyScale();
 })();
 </script>
+
 
 </body>
 </html>
