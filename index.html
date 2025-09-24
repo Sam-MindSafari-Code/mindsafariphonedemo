@@ -31,21 +31,22 @@
   }
 
   /* Center the fixed 390×844 phone canvas */
-  .phone-wrap {
-    width: 100%;
-    min-height: 100dvh;
-    display: grid;
-    place-items: center;
-  }
+ .phone-wrap {
+  position: fixed;   /* <- key: cannot be dragged */
+  inset: 0;
+  display: grid;
+  place-items: center;   /* centers your 390×844 canvas */
+  background: #fff;      /* white gutters */
+  touch-action: manipulation; /* taps ok, no pan/zoom */
+}
 
-  .phone {
-    width: var(--canvas-w);
-    height: var(--canvas-h);
-    background: var(--bg);
-    position: relative;
-    overflow: hidden; /* hide anything beyond the canvas */
-    transform-origin: center center;
-  }
+
+/* keep your fixed canvas */
+.phone {
+  width: 390px;
+  height: 844px;
+  transform-origin: top center; /* for your scale-down */
+}
 
   /* Each screen fills the canvas exactly; backgrounds do not drift */
   .screen {
@@ -199,11 +200,11 @@
   #screen-7 #okDrawBtn { position: absolute; left: 50%; top: 550px; transform: translateX(-50%); }
 
   /* Page 8 (Phone8.svg) */
-  #screen-8 .draw-wrap { position: absolute; left: 50%; top: 240px; transform: translateX(-50%); width: 330px; color: #f73030; text-align: center; }
-  #screen-8 .draw-label { font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,0.25); margin-bottom: 10px; }
+  #screen-8 .draw-wrap { position: absolute; left: 50%; top: 240px; transform: translateX(-50%); width: 330px; color: #ffffff; text-align: center; }
+  #screen-8 .draw-label { font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,8.25); margin-bottom: 10px; }
   #screen-8 .canvas-frame { width: 330px; height: 600px; background: transparent; border-radius: 12px; box-shadow: none; position: relative; overflow: hidden; }
   canvas#pad { display: block; width: 350px; height: 400px; touch-action: none; }
-  #screen-8 #doneBtn { position: absolute; left: 50%; top: 680px; transform: translateX(-50%); }
+  #screen-8 #doneBtn { position: absolute; left: 50%; top: 700px; transform: translateX(-50%); }
 
   /* Page 9 (Phone9.svg) */
   #screen-9 #finalTitle {
@@ -461,38 +462,5 @@
     if (s7b && s7t) s7t.style.top = (460 + s7b.offsetHeight) + 'px';
   })();
 </script>
-
-<script>
-(function fitFixedCanvas() {
-  const phone = document.querySelector('.phone');
-
-  function applyScale() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Base canvas
-    const baseW = 390;
-    const baseH = 844;
-
-    // Compute scale to ensure the whole canvas fits.
-    // - width is locked to 390 via meta viewport, but we still guard for embeds.
-    // - never upscale above 1
-    const scaleW = Math.min(1, vw / baseW);
-    const scaleH = Math.min(1, vh / baseH);
-    const scale  = Math.min(scaleW, scaleH);
-
-    // Center vertically: translate by leftover space/2
-    const offsetY = (vh - baseH * scale) / 2;
-
-    phone.style.transform = `translateY(${Math.max(0, offsetY)}px) scale(${scale})`;
-  }
-
-  // Run now and on resize/orientation changes
-  window.addEventListener('resize', applyScale);
-  window.addEventListener('orientationchange', applyScale);
-  applyScale();
-})();
-</script>
-
 </body>
 </html>
