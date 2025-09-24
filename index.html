@@ -30,26 +30,20 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Center the fixed 390×844 phone canvas */
- .phone-wrap {
-  position: fixed;   /* <- key: cannot be dragged */
+.phone-wrap {
+  position: fixed;
   inset: 0;
   display: grid;
-  place-items: center;   /* centers your 390×844 canvas */
-  background: #fff;      /* white gutters */
-  touch-action: manipulation; /* taps ok, no pan/zoom */
+  place-items: center;   /* centers the canvas */
+  background: #fff;
+  overflow: hidden;
 }
 
-
-  .phone {
-    width: var(--canvas-w);
-    height: var(--canvas-h);
-    background: var(--bg);
-    position: relative;
-    overflow: hidden; /* hide anything beyond the canvas */
-    transform-origin: center center;
-  }
-
+.phone {
+  width: 390px;
+  height: 844px;
+  transform-origin: center center; /* for your scale-down */
+}
   /* Each screen fills the canvas exactly; backgrounds do not drift */
   .screen {
     position: absolute;
