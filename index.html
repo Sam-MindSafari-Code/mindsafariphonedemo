@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Demo App</title>
+<style>
+  :root{
+    --bg:#81D4F6;              /* background showing through transparent parts */
+    --btn:#1E88E5;             /* button blue */
+    --btn-hover:#1565C0;
+    --text:#0b2b3a;            /* dark teal-ish for readable text */
+    --radius:16px;
+    --pad:20px;
+  }
+
+  /* Phone-friendly canvas */
+  body, html {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    height: 100%;
+  }
+
+  .app {
+    width: 100%;
+    min-height: 100svh;        /* safe mobile viewport */
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Each screen uses the SVG as a centered, contained bg */
+  .screen {
+    position: absolute;
+    inset: 0;
+    background: var(--bg) no-repeat center;
+    background-size: contain;  /* keep full SVG visible on any phone ratio */
+    display: grid;
+    place-items: center;
+    padding: var(--pad);
+    transition: opacity 200ms ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .screen.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Content wrapper to keep UI readable on top of art */
+  .panel {
+    width: min(92vw, 430px);   /* fits typical phone widths 360–430px */
+    display: grid;
+    gap: 16px;
+    justify-items: center;
+  }
+
+  /* Buttons */
+  .btn {
+    appearance: none;
+    border: 0;
+    background: var(--btn);
+    color: white;
+    padding: 14px 22px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    letter-spacing: .3px;
+  }
+  .btn:hover { background: var(--btn-hover); }
+  .btn:active { transform: translateY(1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+
+  /* Text input */
+  .field {
+    width: 100%;
+    display: grid;
+    gap: 10px;
+  }
+  .input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 18px;
+    border-radius: var(--radius);
+    border: 2px solid rgba(0,0,0,0.1);
+    outline: none;
+    background: rgba(255,255,255,0.9);
+    color: var(--text);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) inset;
+  }
+  .input:focus {
+    border-color: var(--btn);
+    box-shadow: 0 0 0 3px rgba(30,136,229,0.2), 0 4px 12px rgba(0,0,0,0.08) inset;
+  }
+
+  /* Subtle top spacing so UI doesn't collide with artwork if needed */
+  .spacer { height: 12vh; }
+
+  /* Accessibility helpers off-screen (optional) */
+  .sr-only {
+    position: absolute !important;
+    height: 1px; width: 1px;
+    overflow: hidden; clip: rect(1px,1px,1px,1px);
+    white-space: nowrap; border: 0; padding: 0; margin: -1px;
+  }
+</style>
+</head>
+<body>
+  <main class="app" id="app">
+    <!-- Screen 1: Start -->
+    <section
+      class="screen active"
+      id="screen-1"
+      style="background-image:url('Phone1.svg');"
+      aria-labelledby="title-1"
+    >
+      <div class="panel" role="group" aria-describedby="title-1">
+        <h1 id="title-1" class="sr-only">Welcome</h1>
+        <div class="spacer" aria-hidden="true"></div>
+        <button class="btn" id="startBtn">Start Demo</button>
+      </div>
+    </section>
+
+    <!-- Screen 2: Name entry -->
+    <section
+      class="screen"
+      id="screen-2"
+      style="background-image:url('Phone2.svg');"
+      aria-labelledby="title-2"
+    >
+      <div class="panel" role="form" aria-describedby="title-2">
+        <h2 id="title-2" class="sr-only">Enter your name</h2>
+        <label class="sr-only" for="nameInput">Your name</label>
+        <input class="input" id="nameInput" type="text" placeholder="Enter your name" autocomplete="name" />
+        <button class="btn" id="submitName">Continue</button>
+      </div>
+    </section>
+
+    <!-- Screen 3: Greeting -->
+    <section
+      class="screen"
+      id="screen-3"
+      style="background-image:url('Phone3.svg');"
+      aria-live="polite"
+    >
+      <div class="panel">
+        <div class="spacer" aria-hidden="true"></div>
+        <div id="greeting" style="font-size:22px;font-weight:800;color:var(--text);text-align:center;background:rgba(255,255,255,0.85);padding:12px 16px;border-radius:14px;backdrop-filter:saturate(140%) blur(2px);">
+          Welcome to the Demo!
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+  // Minimal SPA navigation
+  const qs = sel => document.querySelector(sel);
+  const screens = ['#screen-1', '#screen-2', '#screen-3'].map(qs);
+
+  function show(index){
+    screens.forEach((el,i)=>el.classList.toggle('active', i===index));
+  }
+
+  // Persisted name
+  const NAME_KEY = 'demo:name';
+
+  // Elements
+  const startBtn   = qs('#startBtn');
+  const submitBtn  = qs('#submitName');
+  const nameInput  = qs('#nameInput');
+  const greetingEl = qs('#greeting');
+
+  // Restore name if exists
+  const saved = localStorage.getItem(NAME_KEY);
+  if (saved) {
+    nameInput.value = saved;
+  }
+
+  // Handlers
+  startBtn.addEventListener('click', () => show(1));
+
+  function submitName() {
+    const name = (nameInput.value || '').trim();
+    if (!name) {
+      nameInput.focus();
+      nameInput.setAttribute('aria-invalid','true');
+      return;
+    }
+    localStorage.setItem(NAME_KEY, name);
+    greetingEl.textContent = `Welcome to the Demo, ${name}!`;
+    show(2);
+  }
+
+  submitBtn.addEventListener('click', submitName);
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitName();
+  });
+
+  // If a name was already saved, auto-personalize when jumping to screen 3 later
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const n = localStorage.getItem(NAME_KEY);
+      if (n) greetingEl.textContent = `Welcome to the Demo, ${n}!`;
+    }
+  });
+
+  // Ensure initial greeting respects saved name
+  (function initGreeting(){
+    const n = localStorage.getItem(NAME_KEY);
+    if (n) greetingEl.textContent = `Welcome to the Demo, ${n}!`;
+  })();
+
+  // Optional: scale typography slightly on very small widths
+  const mqNarrow = window.matchMedia('(max-width: 360px)');
+  function adjustForNarrow(e){
+    document.documentElement.style.setProperty('--radius', e.matches ? '14px' : '16px');
+  }
+  adjustForNarrow(mqNarrow);
+  mqNarrow.addEventListener('change', adjustForNarrow);
+
+</script>
+</body>
+</html>
