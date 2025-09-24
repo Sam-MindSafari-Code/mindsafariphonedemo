@@ -463,31 +463,22 @@
 (function fitFixedCanvas() {
   const phone = document.querySelector('.phone');
 
-  function applyScale() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+function applyScale() {
+  const phone = document.querySelector('.phone');
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const baseW = 390, baseH = 844;
 
-    // Base canvas
-    const baseW = 390;
-    const baseH = 844;
+  // Only scale down; never scale up above 1
+  const scale = Math.min(1, vw / baseW, vh / baseH);
 
-    // Compute scale to ensure the whole canvas fits.
-    // - width is locked to 390 via meta viewport, but we still guard for embeds.
-    // - never upscale above 1
-    const scaleW = Math.min(1, vw / baseW);
-    const scaleH = Math.min(1, vh / baseH);
-    const scale  = Math.min(scaleW, scaleH);
+  // No translate; the wrapper centers it
+  phone.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', applyScale);
+window.addEventListener('orientationchange', applyScale);
+applyScale();
 
-    // Center vertically: translate by leftover space/2
-    const offsetY = (vh - baseH * scale) / 2;
-
-    phone.style.transform = `translateY(${Math.max(0, offsetY)}px) scale(${scale})`;
-  }
-
-  // Run now and on resize/orientation changes
-  window.addEventListener('resize', applyScale);
-  window.addEventListener('orientationchange', applyScale);
-  applyScale();
 })();
 </script>
 
